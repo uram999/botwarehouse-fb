@@ -9,7 +9,6 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
@@ -35,7 +34,6 @@ def webhook():
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
 
-                print(messaging_event)
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
@@ -52,6 +50,17 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                    sender_id = messaging_event["sender"]["id"]
+                    postback = messaging_event["postback"]["payload"]
+
+                    if postback is "INFO_PLAYLOAD":
+                        send_message(sender_id, "====== 사 용 방 법 ====== ")
+                        send_message(sender_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
+                        send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목 보기")
+                        send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 지표 보기")
+
+                    elif postback is "LIST_PAYLOAD":
+                        get_list_info(sender_id)
                     pass
 
     return "ok", 200
@@ -79,6 +88,12 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+def get_list_info(recipient_id):
+    URL = os.environ["VERIFY_TOKEN"] + '/stock/get_stock_estimate?user_id=uram999'
+    response = requests.get(URL)
+    print(response)
+
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
