@@ -53,13 +53,13 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]
                     postback = messaging_event["postback"]["payload"]
 
-                    if postback is "INFO_PLAYLOAD":
+                    if postback == "INFO_PLAYLOAD":
                         send_message(sender_id, "====== 사 용 방 법 ====== ")
                         send_message(sender_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
                         send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목 보기")
                         send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 지표 보기")
 
-                    elif postback is "LIST_PAYLOAD":
+                    elif postback == "LIST_PAYLOAD":
                         get_list_info(sender_id)
                     pass
 
@@ -90,7 +90,7 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 def get_list_info(recipient_id):
-    URL = os.environ["VERIFY_TOKEN"] + '/stock/get_stock_estimate?user_id=uram999'
+    URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
     response = requests.get(URL)
     print(response)
 
