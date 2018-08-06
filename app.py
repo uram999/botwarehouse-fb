@@ -70,12 +70,17 @@ def webhook():
                         stock_estimate_info = get_estimate_info()
                         send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
                         for info in stock_estimate_info:
-                            send_message(sender_id, "{name} ({code}) - {busiType} 의 오늘 분석은"
-                                         .format(name=info['stock_name'], code=info['stock_code'], busiType=info['stock_busiType']))
+                            send_message(sender_id, "{name} 의 오늘 분석을 알려드릴게요!"
+                                         .format(name=info['stock_name']))
 
-                            send_message(sender_id, "매수 : {name} ({code}) - {busiType} 의 오늘 분석은"
-                                         .format(name=info['stock_name'], code=info['stock_code'],
-                                                 busiType=info['stock_busiType']))
+                            send_message(sender_id, "매수 : {ask}\n 매도 : {bid}\n"
+                                         .format(ask=info['ask'], bid=info['bid']))
+
+                            if info['ask'] > 60:
+                                send_message(sender_id, "으음... 조금더 질러 볼까요? 하하")
+
+                            if info['bid'] > 60:
+                                send_message(sender_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
 
                     pass
 
