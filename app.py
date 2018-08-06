@@ -92,7 +92,8 @@ def send_message(recipient_id, message_text):
 def get_list_info(recipient_id):
     URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
     response = requests.get(URL)
-    print(response)
+    print(response.status_code)
+    print(response.text)
 
 
 
