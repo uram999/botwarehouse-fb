@@ -35,8 +35,6 @@ def webhook():
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
 
-                print(messaging_event)
-
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
@@ -77,52 +75,6 @@ def send_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
-
-
-def make_botton():
-    log("make button Start")
-
-    # params = {
-    #     "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-    # }
-    headers = {
-        "Content-Type": "application/json"
-    }
-    data = json.dumps({
-        "persistent_menu": [
-            {
-                "locale": "default",
-                "composer_input_disabled": True,
-                "call_to_cations": [
-                    {
-                        "title": "사용설명",
-                        "type": "postback",
-                        "payload": "INFO_PLAYLOAD"
-                    },
-                    {
-                        "title": "내 관심종목",
-                        "type": "postback",
-                        "payload": "LIST_PAYLOAD"
-                    },
-                    {
-                        "title": "지표 보기",
-                        "type": "postback",
-                        "payload": "POINT_PLAYLOAD"
-                    }
-                ]
-            },
-            {
-              "type": "web_url",
-              "title": "Latest News",
-              "url": "http://www.messenger.com/",
-              "webview_height_ratio": "full"
-            }
-        ]
-    })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messenger_profile?access_token="+ os.environ["PAGE_ACCESS_TOKEN"], headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
