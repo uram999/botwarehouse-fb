@@ -9,6 +9,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
@@ -53,7 +54,7 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]
                     postback = messaging_event["postback"]["payload"]
 
-                    if postback == "INFO_PLAYLOAD":
+                    if postback == "INFO_PLAYLOAD" or postback == "BOT_START":
                         send_message(sender_id, "========= 사 용 방 법 ========= ")
                         send_message(sender_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
                         send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목을 보여줍니다")
@@ -76,10 +77,10 @@ def webhook():
                             send_message(sender_id, "매수지표 : {ask}\n매도지표 : {bid}\n"
                                          .format(ask=info['ask'], bid=info['bid']))
 
-                            if info['ask'] > 60:
+                            if info['ask'] > 75:
                                 send_message(sender_id, "으음... 조금더 질러 볼까요? 하하")
 
-                            if info['bid'] > 60:
+                            if info['bid'] > 75:
                                 send_message(sender_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
                             send_message(sender_id, "============================ ")
                     pass
