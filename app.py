@@ -60,24 +60,34 @@ def webhook():
                         send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 매수/매도 지표를 보여줍니다")
 
                     elif postback == "LIST_PAYLOAD":
-                        generic_info = get_list_info(sender_id)
+                        stock_list_info = get_list_info()
                         send_message(sender_id, "등록되어 있는 관심 종목들을 알려드릴게요!")
-                        for info in generic_info:
+                        for info in stock_list_info:
                             send_message(sender_id, "{name} ({code}) - {busiType}"
                                          .format(name=info['stock_name'], code=info['stock_code'], busiType=info['stock_busiType']))
 
                     elif postback == "POINT_PLAYLOAD":
+                        stock_estimate_info = get_estimate_info()
                         send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
+                        for info in stock_list_info:
+                            send_message(sender_id, "{name} ({code}) - {busiType} 의 오늘 분석은"
+                                         .format(name=info['stock_name'], code=info['stock_code'], busiType=info['stock_busiType']))
+
+                            send_message(sender_id, "매수 : {name} ({code}) - {busiType} 의 오늘 분석은"
+                                         .format(name=info['stock_name'], code=info['stock_code'],
+                                                 busiType=info['stock_busiType']))
+
                     pass
 
     return "ok", 200
 
 
-def get_list_info(recipient_id):
+def get_list_info():
     URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
     response = requests.get(URL)
 
     data = json.loads(response.text)
+    print(data)
     return data
     # generic_info = json.dumps({
     #     "attachment": {
@@ -138,6 +148,14 @@ def get_list_info(recipient_id):
     # })
     # print(type(generic_info))
     # send_generic(recipient_id, generic_info)
+
+
+def get_estimate_info():
+    URL = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id=uram999'
+    response = requests.get(URL)
+
+    data = json.loads(response.text)
+    return data
 
 
 def send_message(recipient_id, message_text):
