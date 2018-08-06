@@ -69,16 +69,16 @@ def webhook():
 def get_list_info(recipient_id):
     URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
     response = requests.get(URL)
-    print(response.status_code)
-    print(response.text)
 
     data = json.loads(response.text)
+    print(data)
+    print(data.values())
     generic_info = {
-        "attachment":{
-            "type":"template",
-            "payload":{
-                "template_type":"generic",
-                "elements":[{
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
                     "title": data[0]['stock_name']+"("+data[0]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
                     "subtitle": data[0]['stock_busiType'],
@@ -89,12 +89,12 @@ def get_list_info(recipient_id):
                         "webview_height_ratio": "tall",
                         "fallback_url": "https://petersfancybrownhats.com/"
                     },
-                    "buttons":[{
-                        "type":"postback",
-                        "title":"Start Chatting",
-                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                    "buttons": [{
+                        "type": "postback",
+                        "title": "Start Chatting",
+                        "payload": "DEVELOPER_DEFINED_PAYLOAD"
                     }]
-                },{
+                },  {
                     "title": data[1]['stock_name']+"("+data[1]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
                     "subtitle": data[1]['stock_busiType'],
@@ -110,7 +110,7 @@ def get_list_info(recipient_id):
                         "title":"Start Chatting",
                         "payload":"DEVELOPER_DEFINED_PAYLOAD"
                     }]
-                },{
+                },  {
                     "title": data[2]['stock_name']+"("+data[2]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
                     "subtitle": data[2]['stock_busiType'],
