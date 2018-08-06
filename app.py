@@ -79,7 +79,9 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 
-def make_botton(receipient_id):
+def make_botton():
+    log("make button Start")
+
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
@@ -117,7 +119,7 @@ def make_botton(receipient_id):
             }
         ]
     })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    r = requests.post("https://graph.facebook.com/v2.6/me/messenger_profile", params=params, headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
@@ -137,4 +139,4 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
 
 if __name__ == '__main__':
     app.run(debug=True)
-    make_botton("asd")
+    make_botton()
