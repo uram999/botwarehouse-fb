@@ -54,16 +54,83 @@ def webhook():
                     postback = messaging_event["postback"]["payload"]
 
                     if postback == "INFO_PLAYLOAD":
-                        send_message(sender_id, "====== 사 용 방 법 ====== ")
+                        send_message(sender_id, "========= 사 용 방 법 ========= ")
                         send_message(sender_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
-                        send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목 보기")
-                        send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 지표 보기")
+                        send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목을 보여줍니다")
+                        send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 매수/매도 지표를 보여줍니다")
 
                     elif postback == "LIST_PAYLOAD":
                         get_list_info(sender_id)
                     pass
 
     return "ok", 200
+
+
+def get_list_info(recipient_id):
+    URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
+    response = requests.get(URL)
+    print(response.status_code)
+    print(response.text)
+
+    data = json.loads(response.text)
+    generic_info = json.dumps({
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"generic",
+                "elements":[{
+                    "title": data[0].stock_name+"("+data[0].stock_code+")",
+                    "image_url": "https://petersfancybrownhats.com/company_image.png",
+                    "subtitle": data[0].busiType,
+                    "default_action":  {
+                        "type": "web_url",
+                        "url": "https://petersfancybrownhats.com/view?item=103",
+                        "messenger_extensions": False,
+                        "webview_height_ratio": "tall",
+                        "fallback_url": "https://petersfancybrownhats.com/"
+                    },
+                    "buttons":[{
+                        "type":"postback",
+                        "title":"Start Chatting",
+                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                    }]
+                },{
+                    "title": data[1].stock_name+"("+data[1].stock_code+")",
+                    "image_url": "https://petersfancybrownhats.com/company_image.png",
+                    "subtitle": data[1].busiType,
+                    "default_action":  {
+                        "type": "web_url",
+                        "url": "https://petersfancybrownhats.com/view?item=103",
+                        "messenger_extensions": False,
+                        "webview_height_ratio": "tall",
+                        "fallback_url": "https://petersfancybrownhats.com/"
+                    },
+                    "buttons":[{
+                        "type":"postback",
+                        "title":"Start Chatting",
+                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                    }]
+                },{
+                    "title": data[2].stock_name+"("+data[2].stock_code+")",
+                    "image_url": "https://petersfancybrownhats.com/company_image.png",
+                    "subtitle": data[2].busiType,
+                    "default_action":  {
+                        "type": "web_url",
+                        "url": "https://petersfancybrownhats.com/view?item=103",
+                        "messenger_extensions": False,
+                        "webview_height_ratio": "tall",
+                        "fallback_url": "https://petersfancybrownhats.com/"
+                    },
+                    "buttons":[{
+                        "type":"postback",
+                        "title":"Start Chatting",
+                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                    }]
+                }]
+            }
+        }
+    })
+    send_generic(recipient_id, generic_info)
 
 
 def send_message(recipient_id, message_text):
@@ -89,15 +156,29 @@ def send_message(recipient_id, message_text):
         log(r.status_code)
         log(r.text)
 
-def get_list_info(recipient_id):
-    URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
-    response = requests.get(URL)
-    print(response.status_code)
-    print(response.text)
 
-    data = json.loads(response.text)
-    print(data)
+def send_generic(recipient_id, generic_info):
 
+    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
+
+    params = {
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = json.dumps({
+        "recipient": {
+            "id": recipient_id
+        },
+        "message": {
+            "text": message_text
+        }
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
