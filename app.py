@@ -71,9 +71,9 @@ def webhook():
                         send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
                         for info in stock_estimate_info:
                             send_message(sender_id, "{name} 의 오늘 분석을 알려드릴게요!"
-                                         .format(name=info['stock_name']))
+                                         .format(name=info['stock']))
 
-                            send_message(sender_id, "매수 : {ask}\n 매도 : {bid}\n"
+                            send_message(sender_id, "매수지표 : {ask}\n 매도지표 : {bid}\n"
                                          .format(ask=info['ask'], bid=info['bid']))
 
                             if info['ask'] > 60:
