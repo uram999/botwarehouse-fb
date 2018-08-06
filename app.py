@@ -78,6 +78,50 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 
+def make_botton(receipient_id):
+    params = {
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = json.dumps({
+        "persistent_menu": [
+            {
+                "locale": "default",
+                "composer_input_disabled": True,
+                "call_to_cations": [
+                    {
+                        "title": "사용설명",
+                        "type": "postback",
+                        "payload": "INFO_PLAYLOAD"
+                    },
+                    {
+                        "title": "내 관심종목",
+                        "type": "postback",
+                        "payload": "LIST_PAYLOAD"
+                    },
+                    {
+                        "title": "지표 보기",
+                        "type": "postback",
+                        "payload": "POINT_PLAYLOAD"
+                    }
+                ]
+            },
+            {
+              "type": "web_url",
+              "title": "Latest News",
+              "url": "http://www.messenger.com/",
+              "webview_height_ratio": "full"
+            }
+        ]
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+
+
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
     try:
         if type(msg) is dict:
@@ -92,3 +136,4 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
 
 if __name__ == '__main__':
     app.run(debug=True)
+    make_botton("asd")
