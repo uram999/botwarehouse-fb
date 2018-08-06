@@ -81,7 +81,7 @@ def get_list_info(recipient_id):
                 "elements":[{
                     "title": data[0]['stock_name']+"("+data[0]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[0]['busiType'],
+                    "subtitle": data[0]['stock_busiType'],
                     "default_action":  {
                         "type": "web_url",
                         "url": "https://petersfancybrownhats.com/view?item=103",
@@ -97,7 +97,7 @@ def get_list_info(recipient_id):
                 },{
                     "title": data[1]['stock_name']+"("+data[1]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[1]['busiType'],
+                    "subtitle": data[1]['stock_busiType'],
                     "default_action":  {
                         "type": "web_url",
                         "url": "https://petersfancybrownhats.com/view?item=103",
@@ -113,7 +113,7 @@ def get_list_info(recipient_id):
                 },{
                     "title": data[2]['stock_name']+"("+data[2]['stock_code']+")",
                     "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[2]['busiType'],
+                    "subtitle": data[2]['stock_busiType'],
                     "default_action":  {
                         "type": "web_url",
                         "url": "https://petersfancybrownhats.com/view?item=103",
