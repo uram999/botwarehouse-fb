@@ -73,7 +73,7 @@ def get_list_info(recipient_id):
     print(response.text)
 
     data = json.loads(response.text)
-    generic_info = json.dumps({
+    generic_info = {
         "attachment":{
             "type":"template",
             "payload":{
@@ -129,7 +129,7 @@ def get_list_info(recipient_id):
                 }]
             }
         }
-    })
+    }
     send_generic(recipient_id, generic_info)
 
 
