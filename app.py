@@ -84,9 +84,9 @@ def send_message(recipient_id, message_text):
 def make_botton():
     log("make button Start")
 
-    params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-    }
+    # params = {
+    #     "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    # }
     headers = {
         "Content-Type": "application/json"
     }
@@ -121,7 +121,7 @@ def make_botton():
             }
         ]
     })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messenger_profile", params=params, headers=headers, data=data)
+    r = requests.post("https://graph.facebook.com/v2.6/me/messenger_profile?access_token="+ os.environ["PAGE_ACCESS_TOKEN"], headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
