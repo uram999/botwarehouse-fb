@@ -130,10 +130,12 @@ def get_list_info(recipient_id):
             }
         }
     })
+    print(type(generic_info))
     send_generic(recipient_id, generic_info)
 
 
 def send_message(recipient_id, message_text):
+    print(type(message_text))
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
