@@ -95,6 +95,9 @@ def get_list_info(recipient_id):
     print(response.status_code)
     print(response.text)
 
+    data = json.loads(response.text)
+    print(data)
+
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
