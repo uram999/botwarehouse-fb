@@ -72,7 +72,7 @@ def get_list_info(recipient_id):
 
     data = json.loads(response.text)
     print(data)
-    print(data.values())
+    print(data[0].values())
     generic_info = {
         "attachment": {
             "type": "template",
