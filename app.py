@@ -69,7 +69,7 @@ def webhook():
                     elif postback == "POINT_PLAYLOAD":
                         stock_estimate_info = get_estimate_info()
                         send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
-                        for info in stock_list_info:
+                        for info in stock_estimate_info:
                             send_message(sender_id, "{name} ({code}) - {busiType} 의 오늘 분석은"
                                          .format(name=info['stock_name'], code=info['stock_code'], busiType=info['stock_busiType']))
 
@@ -87,7 +87,6 @@ def get_list_info():
     response = requests.get(URL)
 
     data = json.loads(response.text)
-    print(data)
     return data
     # generic_info = json.dumps({
     #     "attachment": {
@@ -155,6 +154,7 @@ def get_estimate_info():
     response = requests.get(URL)
 
     data = json.loads(response.text)
+    print(data)
     return data
 
 
