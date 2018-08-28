@@ -104,18 +104,16 @@ def make_generic(stock_lists):
     result_json = []
 
     for stock in stock_lists:
-        action_json = []
-        button_json = []
 
-        action_data = {
+        action_json = {
             "type": 'web_url',
             "url": 'https://www.facebook.com/BotWarehouse-1498183390311752/?modal=admin_todo_tour',
             "messenger_extensions": False,
             "webview_height_ratio": 'tall',
             "fallback_url": 'https://petersfancybrownhats.com/'
         }
-        action_json.append(action_data)
 
+        button_json = []
         button_data = {
             "type": 'postback',
             "title": '종목수정',
