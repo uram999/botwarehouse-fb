@@ -189,7 +189,7 @@ def make_generic(stock_lists):
             'default_action': action_json,
             'buttons': button_json,
         }
-        result_json.append(json)
+        result_json.append(result_data)
 
     print(json.loads(result_json))
 
