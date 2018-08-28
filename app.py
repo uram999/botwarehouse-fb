@@ -209,8 +209,9 @@ def send_generic(recipient_id, generic_info):
 
     if r.status_code != 200:
         # log(r.status_code)
+        # log(r.text)
         print(r.status_code)
-        log(r.text)
+        print(r.text)
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
