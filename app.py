@@ -191,7 +191,8 @@ def make_generic(stock_lists):
         }
         result_json.append(result_data)
 
-    print(json.loads(result_json))
+    temp = json.dumps(result_json)
+    print(json.loads(temp))
 
 
 def get_list_info():
