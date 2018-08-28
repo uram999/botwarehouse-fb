@@ -98,64 +98,64 @@ def get_list_info_gen(recipient_id):
     data = json.loads(response.text)
     make_generic(data)
 
-    generic_info = json.dumps({
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": data[0]['stock_name']+"("+data[0]['stock_code']+")",
-                    "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[0]['stock_busiType'],
-                    "default_action":  {
-                        "type": "web_url",
-                        "url": "https://petersfancybrownhats.com/view?item=103",
-                        "messenger_extensions": False,
-                        "webview_height_ratio": "tall",
-                        "fallback_url": "https://petersfancybrownhats.com/"
-                    },
-                    "buttons": [{
-                        "type": "postback",
-                        "title": "Start Chatting",
-                        "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                    }]
-                },  {
-                    "title": data[1]['stock_name']+"("+data[1]['stock_code']+")",
-                    "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[1]['stock_busiType'],
-                    "default_action":  {
-                        "type": "web_url",
-                        "url": "https://petersfancybrownhats.com/view?item=103",
-                        "messenger_extensions": False,
-                        "webview_height_ratio": "tall",
-                        "fallback_url": "https://petersfancybrownhats.com/"
-                    },
-                    "buttons":[{
-                        "type":"postback",
-                        "title":"Start Chatting",
-                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
-                    }]
-                },  {
-                    "title": data[2]['stock_name']+"("+data[2]['stock_code']+")",
-                    "image_url": "https://petersfancybrownhats.com/company_image.png",
-                    "subtitle": data[2]['stock_busiType'],
-                    "default_action":  {
-                        "type": "web_url",
-                        "url": "https://petersfancybrownhats.com/view?item=103",
-                        "messenger_extensions": False,
-                        "webview_height_ratio": "tall",
-                        "fallback_url": "https://petersfancybrownhats.com/"
-                    },
-                    "buttons":[{
-                        "type":"postback",
-                        "title":"Start Chatting",
-                        "payload":"DEVELOPER_DEFINED_PAYLOAD"
-                    }]
-                }]
-            }
-        }
-    })
-    print(type(generic_info))
+    # generic_info = json.dumps({
+    #     "attachment": {
+    #         "type": "template",
+    #         "payload": {
+    #             "template_type": "generic",
+    #             "elements": [{
+    #                 "title": data[0]['stock_name']+"("+data[0]['stock_code']+")",
+    #                 "image_url": "https://petersfancybrownhats.com/company_image.png",
+    #                 "subtitle": data[0]['stock_busiType'],
+    #                 "default_action":  {
+    #                     "type": "web_url",
+    #                     "url": "https://petersfancybrownhats.com/view?item=103",
+    #                     "messenger_extensions": False,
+    #                     "webview_height_ratio": "tall",
+    #                     "fallback_url": "https://petersfancybrownhats.com/"
+    #                 },
+    #                 "buttons": [{
+    #                     "type": "postback",
+    #                     "title": "Start Chatting",
+    #                     "payload": "DEVELOPER_DEFINED_PAYLOAD"
+    #                 }]
+    #             },  {
+    #                 "title": data[1]['stock_name']+"("+data[1]['stock_code']+")",
+    #                 "image_url": "https://petersfancybrownhats.com/company_image.png",
+    #                 "subtitle": data[1]['stock_busiType'],
+    #                 "default_action":  {
+    #                     "type": "web_url",
+    #                     "url": "https://petersfancybrownhats.com/view?item=103",
+    #                     "messenger_extensions": False,
+    #                     "webview_height_ratio": "tall",
+    #                     "fallback_url": "https://petersfancybrownhats.com/"
+    #                 },
+    #                 "buttons":[{
+    #                     "type":"postback",
+    #                     "title":"Start Chatting",
+    #                     "payload":"DEVELOPER_DEFINED_PAYLOAD"
+    #                 }]
+    #             },  {
+    #                 "title": data[2]['stock_name']+"("+data[2]['stock_code']+")",
+    #                 "image_url": "https://petersfancybrownhats.com/company_image.png",
+    #                 "subtitle": data[2]['stock_busiType'],
+    #                 "default_action":  {
+    #                     "type": "web_url",
+    #                     "url": "https://petersfancybrownhats.com/view?item=103",
+    #                     "messenger_extensions": False,
+    #                     "webview_height_ratio": "tall",
+    #                     "fallback_url": "https://petersfancybrownhats.com/"
+    #                 },
+    #                 "buttons":[{
+    #                     "type":"postback",
+    #                     "title":"Start Chatting",
+    #                     "payload":"DEVELOPER_DEFINED_PAYLOAD"
+    #                 }]
+    #             }]
+    #         }
+    #     }
+    # })
+    # print(type(generic_info))
     # send_generic(recipient_id, generic_info)
 
 
@@ -191,7 +191,7 @@ def make_generic(stock_lists):
         }
         result_json.append(json)
 
-    print(result_json)
+    print(json.loads(result_json))
 
 
 def get_list_info():
