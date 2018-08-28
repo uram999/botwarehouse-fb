@@ -207,9 +207,9 @@ def send_generic(recipient_id, generic_info):
 
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
 
-    print(r)
     if r.status_code != 200:
-        log(r.status_code)
+        # log(r.status_code)
+        print(r.status_code)
         log(r.text)
 
 
