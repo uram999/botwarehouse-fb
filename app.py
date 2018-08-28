@@ -156,7 +156,7 @@ def get_list_info_gen(recipient_id):
         }
     })
     print(type(generic_info))
-    send_generic(recipient_id, generic_info)
+    # send_generic(recipient_id, generic_info)
 
 
 def make_generic(stock_lists):
