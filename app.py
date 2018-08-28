@@ -64,11 +64,8 @@ def webhook():
                         send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 매수/매도 지표를 보여줍니다")
 
                     elif postback == "LIST_PAYLOAD":
-                        stock_list_info = get_list_info()
                         send_message(sender_id, "등록되어 있는 관심 종목들을 알려드릴게요!")
-                        for info in stock_list_info:
-                            send_message(sender_id, "{name} ({code}) - {busiType}"
-                                         .format(name=info['stock_name'], code=info['stock_code'], busiType=info['stock_busiType']))
+                        get_list_info_gen(sender_id)
 
                     elif postback == "POINT_PLAYLOAD":
                         stock_estimate_info = get_estimate_info()
@@ -115,14 +112,21 @@ def make_generic(stock_lists):
         button_json = []
         button_data = {
             "type": 'postback',
-            "title": '종목수정',
+            "title": '종목 수정',
             "payload": 'STOCK_MODIFY'
         }
         button_json.append(button_data)
 
         button_data = {
             "type": 'postback',
-            "title": '관련뉴스',
+            "title": '지표 보기',
+            "payload": 'STOCK_INDICATOR'
+        }
+        button_json.append(button_data)
+
+        button_data = {
+            "type": 'postback',
+            "title": '추천 뉴스',
             "payload": 'STOCK_NEWS'
         }
         button_json.append(button_data)
