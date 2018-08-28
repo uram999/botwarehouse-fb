@@ -251,7 +251,15 @@ def send_generic(recipient_id, generic_info):
         "recipient": {
             "id": recipient_id
         },
-        "message": generic_info
+        "message": {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": generic_info
+                }
+            }
+        }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
