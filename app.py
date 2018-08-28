@@ -117,7 +117,14 @@ def make_generic(stock_lists):
         button_data = {
             "type": 'postback',
             "title": '종목수정',
-            "playload": 'STOCK_MODIFY'
+            "payload": 'STOCK_MODIFY'
+        }
+        button_json.append(button_data)
+
+        button_data = {
+            "type": 'postback',
+            "title": '관련뉴스',
+            "payload": 'STOCK_NEWS'
         }
         button_json.append(button_data)
 
