@@ -167,27 +167,27 @@ def make_generic(stock_lists):
         button_json = []
 
         action_data = {
-            'type': 'web_url',
-            'url': 'https://www.facebook.com/BotWarehouse-1498183390311752/?modal=admin_todo_tour',
-            'messenger_extensions': False,
-            'webview_height_ratio': 'tall',
-            'fallback_url': 'https://petersfancybrownhats.com/'
+            "type": 'web_url',
+            "url": 'https://www.facebook.com/BotWarehouse-1498183390311752/?modal=admin_todo_tour',
+            "messenger_extensions": False,
+            "webview_height_ratio": 'tall',
+            "fallback_url": 'https://petersfancybrownhats.com/'
         }
         action_json.append(action_data)
 
         button_data = {
-            'type': 'postback',
-            'title': '종목수정',
-            'playload': 'STOCK_MODIFY'
+            "type": 'postback',
+            "title": '종목수정',
+            "playload": 'STOCK_MODIFY'
         }
         button_json.append(button_data)
 
         result_data = {
-            'title': stock['stock_name']+"("+stock['stock_code']+")",
-            'subtitle': stock['stock_busiType'],
-            'image_url': 'https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/38511998_1498186563644768_5962859944947482624_o.jpg?_nc_cat=0&oh=778b88d1ef3fc7bef74a8f7db5cef3b8&oe=5BEE2966',
-            'default_action': action_json,
-            'buttons': button_json,
+            "title": stock['stock_name']+"("+stock['stock_code']+")",
+            "subtitle": stock['stock_busiType'],
+            "image_url": 'https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/38511998_1498186563644768_5962859944947482624_o.jpg?_nc_cat=0&oh=778b88d1ef3fc7bef74a8f7db5cef3b8&oe=5BEE2966',
+            "default_action": action_json,
+            "buttons": button_json,
         }
         result_json.append(result_data)
 
@@ -261,6 +261,9 @@ def send_generic(recipient_id, generic_info):
             }
         }
     })
+
+    print(data)
+
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
