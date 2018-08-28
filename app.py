@@ -96,7 +96,7 @@ def get_list_info_gen(recipient_id):
     response = requests.get(URL)
 
     data = json.loads(response.text)
-    make_generic(data)
+    generic_info = make_generic(data)
 
     # generic_info = json.dumps({
     #     "attachment": {
@@ -156,7 +156,7 @@ def get_list_info_gen(recipient_id):
     #     }
     # })
     # print(type(generic_info))
-    # send_generic(recipient_id, generic_info)
+    send_generic(recipient_id, generic_info)
 
 
 def make_generic(stock_lists):
