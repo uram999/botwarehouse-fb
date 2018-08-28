@@ -109,8 +109,7 @@ def make_generic(stock_lists):
             "type": 'web_url',
             "url": 'https://www.facebook.com/BotWarehouse-1498183390311752/?modal=admin_todo_tour',
             "messenger_extensions": False,
-            "webview_height_ratio": 'tall',
-            "fallback_url": 'https://petersfancybrownhats.com/'
+            "webview_height_ratio": 'tall'
         }
 
         button_json = []
