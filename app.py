@@ -82,6 +82,15 @@ def webhook():
                             if info['bid'] > 75:
                                 send_message(sender_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
                             send_message(sender_id, "============================ ")
+
+                    elif "STOCK_MODIFY" in postback:
+                        pass
+
+                    elif "STOCK_INDICATOR" in postback:
+                        pass
+
+                    elif "STOCK_NEWS" in postback:
+                        get_stock_news(sender_id, user_id, payload_data)
                     pass
 
     return "ok", 200
@@ -112,6 +121,58 @@ def get_list_info(recipient_id, user_id):
     data = json.loads(response.text)
     generic_info = make_stock_list_generic(data)
     send_generic(recipient_id, generic_info)
+
+
+def get_estimate_info(user_id):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id=' + user_id
+    response = requests.get(api_url)
+
+    data = json.loads(response.text)
+    print(data)
+    return data
+
+
+def get_stock_news(recipient_id, user_id, payload_data):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?stock_id=' + payload_data[2]
+    response = requests.get(api_url)
+
+    data = json.loads(response.text)
+    generic_info = make_stock_news_generic(data)
+    send_generic(recipient_id, generic_info)
+
+
+def make_stock_news_generic(news_lists):
+    result_json = []
+
+    for news in news_lists:
+
+        subtitle = news['link'].split('/')[2]
+        action_json = {
+            "type": 'web_url',
+            "url": news['link'],
+            "messenger_extensions": False,
+            "webview_height_ratio": 'tall'
+        }
+
+        button_json = []
+        button_data = {
+            "type": 'web_url',
+            "title": '상세 보기',
+            "url": news['link']
+        }
+        button_json.append(button_data)
+
+        result_data = {
+            "title": news['title'],
+            "subtitle": subtitle,
+            "image_url": os.environ["NEWS_IMAGE"],
+            "default_action": action_json,
+            "buttons": button_json,
+        }
+        result_json.append(result_data)
+
+    temp = json.dumps(result_json)
+    return json.loads(temp)
 
 
 def make_stock_list_generic(stock_lists):
@@ -159,15 +220,6 @@ def make_stock_list_generic(stock_lists):
 
     temp = json.dumps(result_json)
     return json.loads(temp)
-
-
-def get_estimate_info(user_id):
-    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id='+user_id
-    response = requests.get(api_url)
-
-    data = json.loads(response.text)
-    print(data)
-    return data
 
 
 def send_message(recipient_id, message_text):
