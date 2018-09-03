@@ -203,7 +203,7 @@ def stock_modify_search(recipient_id, code):
         NEW_STOCK_CODE = search_data['stock_code']
 
         generic_info = make_modify_stock_generic(search_data)
-        send_generic(generic_info)
+        send_generic(recipient_id, generic_info)
     else:
         send_message(recipient_id, "지원되지 않은 종목코드입니다.")
         send_message(recipient_id, "종목코드를 다시 한 번 확인 해 주세요!")
@@ -340,8 +340,7 @@ def make_modify_stock_generic(stock):
     button_data = {
         "type": 'postback',
         "title": '수정 하기',
-        "payload": 'STOCK_UPDATE_{pre_code}_{new_code}'
-            .format(pre_code=PRE_STOCK_CODE, new_code=NEW_STOCK_CODE)
+        "payload": 'STOCK_UPDATE_{pre_code}_{new_code}'.format(pre_code=PRE_STOCK_CODE, new_code=NEW_STOCK_CODE)
     }
     button_json.append(button_data)
 
