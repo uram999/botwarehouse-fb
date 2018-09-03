@@ -152,7 +152,7 @@ def make_stock_news_generic(news_lists):
             "type": 'web_url',
             "url": news['link'],
             "messenger_extensions": False,
-            "webview_height_ratio": 'tall'
+            "webview_height_ratio": 'COMPACT'
         }
 
         button_json = []
