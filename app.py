@@ -9,9 +9,6 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-PRE_STOCK_CODE = ''
-NEW_STOCK_CODE = ''
-
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
@@ -46,11 +43,11 @@ def webhook():
 
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    global PRE_STOCK_CODE
-
                     if message_text == "보기":
                         get_list_info(sender_id)
                     elif "[" in message_text and "]" in message_text:
+                        stock_modify_search(sender_id, message_text)
+                    elif ">" in message_text:
                         stock_modify_search(sender_id, message_text)
                     else:
                         send_message(sender_id, "roger that!")
@@ -184,27 +181,20 @@ def get_stock_news(recipient_id, payload_data):
 
 def stock_modify_start(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 종목수정을 시작합니다.".format(code=payload_data[2]))
-    global PRE_STOCK_CODE
-    PRE_STOCK_CODE = payload_data[2]
-
-    send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 []안에 입력 해 주세요.")
-    send_message(recipient_id, "Ex) [094280] , [035420]")
+    send_message(recipient_id, "수정하고 싶은 종목코드와 새로운 종목코드를 입력 해 주세요.")
+    send_message(recipient_id, "Ex) 094280 > 035420")
 
 
-def stock_modify_search(recipient_id, code):
-    match_code = code.split("[")[1]
-    match_code = match_code.split("]")[0]
-    search_data = stock_search(match_code)
+def stock_modify_search(recipient_id, text):
+    pre_code = text.split(">")[0].strip()
+    new_code = text.split(">")[1].strip()
+    search_data = stock_search(new_code)
 
     if search_data['success']:
         send_message(recipient_id, "검색된 종목이 있습니다.")
         send_message(recipient_id, "검색된 종목이 맞는지 확인 해 주세요!")
 
-        global NEW_STOCK_CODE
-        NEW_STOCK_CODE = search_data['stock_code']
-        global PRE_STOCK_CODE
-
-        generic_info = make_modify_stock_generic(search_data)
+        generic_info = make_modify_stock_generic(search_data, pre_code, new_code)
         send_generic(recipient_id, generic_info)
     else:
         send_message(recipient_id, "지원되지 않은 종목코드입니다.")
@@ -231,14 +221,6 @@ def stock_modify_update(recipient_id, user_id, payload_data):
                          new_name=data['new_stock']['stock_name'], new_code=data['new_stock']['stock_code']))
 
     reset_global()
-
-
-def reset_global():
-    global PRE_STOCK_CODE
-    PRE_STOCK_CODE = ''
-
-    global NEW_STOCK_CODE
-    NEW_STOCK_CODE = ''
 
 
 def stock_search(code):
@@ -332,9 +314,7 @@ def make_stock_list_generic(stock_lists):
     return json.loads(temp)
 
 
-def make_modify_stock_generic(stock):
-    global PRE_STOCK_CODE
-    global NEW_STOCK_CODE
+def make_modify_stock_generic(stock, pre_code, new_code):
 
     result_json = []
 
@@ -349,7 +329,7 @@ def make_modify_stock_generic(stock):
     button_data = {
         "type": 'postback',
         "title": '수정 하기',
-        "payload": 'STOCK_UPDATE_{pre_code}_{new_code}'.format(pre_code=PRE_STOCK_CODE, new_code=NEW_STOCK_CODE)
+        "payload": 'STOCK_UPDATE_{pre_code}_{new_code}'.format(pre_code=pre_code, new_code=new_code)
     }
     button_json.append(button_data)
 
