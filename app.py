@@ -49,6 +49,8 @@ def webhook():
                         stock_modify_search(sender_id, message_text)
                     elif ">" in message_text:
                         stock_modify_search(sender_id, message_text)
+                    elif "+" in message_text:
+                        stock_add_search(sender_id, message_text)
                     else:
                         send_message(sender_id, "roger that!")
 
@@ -78,9 +80,17 @@ def webhook():
 
                     elif "STOCK_UPDATE" in postback:
                         stock_modify_update(sender_id, user_id, payload_data)
+                        get_list_info(sender_id, user_id)
 
                     elif "STOCK_REVERT" in postback:
                         stock_modify_revert(sender_id, user_id)
+
+                    elif "STOCK_ADD" in postback:
+                        stock_add_start(sender_id, user_id)
+
+                    elif "STOCK_INSERT" in postback:
+                        stock_add_update(sender_id, user_id, payload_data)
+                        get_list_info(sender_id, user_id)
 
                     elif "STOCK_INDICATOR" in postback:
                         get_estimate_info(sender_id, user_id, payload_data)
@@ -220,6 +230,40 @@ def stock_modify_update(recipient_id, user_id, payload_data):
         .format(pre_name=data['pre_stock']['stock_name'], pre_code=data['pre_stock']['stock_code'], new_name=data['new_stock']['stock_name'], new_code=data['new_stock']['stock_code']))
 
 
+def stock_add_start(recipient_id):
+    send_message(recipient_id, "신규 종목등록을 시작합니다.")
+    send_message(recipient_id, "등록하고 싶은 종목코드를 입력 해 주세요.")
+    send_message(recipient_id, "Ex) +(종목코드) \n+094280")
+
+
+def stock_add_search(recipient_id, text):
+    new_code = text.split("+")[1].strip()
+    search_data = stock_search(new_code)
+
+    if search_data['success']:
+        send_message(recipient_id, "검색된 종목이 있습니다.")
+        send_message(recipient_id, "검색된 종목이 맞는지 확인 해 주세요!")
+
+        generic_info = make_add_stock_generic(search_data, new_code)
+        send_generic(recipient_id, generic_info)
+    else:
+        send_message(recipient_id, "지원되지 않은 종목코드입니다.")
+        send_message(recipient_id, "종목코드를 다시 한 번 확인 해 주세요!")
+
+
+def stock_add_update(recipient_id, user_id, payload_data):
+    api_url = os.environ["SERVER_URL"] \
+        + '/stock/add_stock_list?user_id={user_id}&code={new_code}'\
+        .format(user_id=user_id, new_code=payload_data[2])
+    response = requests.get(api_url)
+
+    data = json.loads(response.text)[0]
+
+    send_message(recipient_id, "관심 종목이 등록되었습니다.")
+    send_message(recipient_id, "{new_name}({new_code})"\
+        .format(new_name=data['stock_name'], new_code=data['stock_code']))
+
+
 def stock_search(code):
     api_url = os.environ["SERVER_URL"] + '/stock/search_stock_list?code={code}'.format(code=code)
     response = requests.get(api_url)
@@ -277,26 +321,35 @@ def make_stock_list_generic(stock_lists):
         }
 
         button_json = []
-        button_data = {
-            "type": 'postback',
-            "title": '종목 수정',
-            "payload": 'STOCK_MODIFY_'+stock['stock_code']
-        }
-        button_json.append(button_data)
+        if "미등록" in stock['stock_name']:
+            button_data = {
+                "type": 'postback',
+                "title": '종목 등록',
+                "payload": 'STOCK_ADD'
+            }
+            button_json.append(button_data)
 
-        button_data = {
-            "type": 'postback',
-            "title": '지표 보기',
-            "payload": 'STOCK_INDICATOR_'+stock['stock_code']
-        }
-        button_json.append(button_data)
+        else:
+            button_data = {
+                "type": 'postback',
+                "title": '종목 수정',
+                "payload": 'STOCK_MODIFY_'+stock['stock_code']
+            }
+            button_json.append(button_data)
 
-        button_data = {
-            "type": 'postback',
-            "title": '추천 뉴스',
-            "payload": 'STOCK_NEWS_'+stock['stock_code']
-        }
-        button_json.append(button_data)
+            button_data = {
+                "type": 'postback',
+                "title": '지표 보기',
+                "payload": 'STOCK_INDICATOR_'+stock['stock_code']
+            }
+            button_json.append(button_data)
+
+            button_data = {
+                "type": 'postback',
+                "title": '추천 뉴스',
+                "payload": 'STOCK_NEWS_'+stock['stock_code']
+            }
+            button_json.append(button_data)
 
         result_data = {
             "title": stock['stock_name']+"("+stock['stock_code']+")",
@@ -311,6 +364,7 @@ def make_stock_list_generic(stock_lists):
     return json.loads(temp)
 
 
+# 수정종목 Generic Maker Func
 def make_modify_stock_generic(stock, pre_code, new_code):
 
     result_json = []
@@ -334,6 +388,39 @@ def make_modify_stock_generic(stock, pre_code, new_code):
         "type": 'postback',
         "title": '수정 취소',
         "payload": 'STOCK_REVERT'
+    }
+    button_json.append(button_data)
+
+    result_data = {
+        "title": stock['stock_name'] + "(" + stock['stock_code'] + ")",
+        "subtitle": stock['stock_type'],
+        "image_url": os.environ["MAIN_IMAGE"],
+        "default_action": action_json,
+        "buttons": button_json,
+    }
+    result_json.append(result_data)
+
+    temp = json.dumps(result_json)
+    return json.loads(temp)
+
+
+# 추가종목 Generic Maker Func
+def make_add_stock_generic(stock, new_code):
+
+    result_json = []
+
+    action_json = {
+        "type": 'web_url',
+        "url": 'https://finance.naver.com/item/main.nhn?code=' + stock['stock_code'],
+        "messenger_extensions": False,
+        "webview_height_ratio": 'tall'
+    }
+
+    button_json = []
+    button_data = {
+        "type": 'postback',
+        "title": '등록 하기',
+        "payload": 'STOCK_INSERT_{new_code}'.format(new_code=new_code)
     }
     button_json.append(button_data)
 
