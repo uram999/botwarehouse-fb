@@ -86,7 +86,7 @@ def webhook():
                         stock_modify_revert(sender_id, user_id)
 
                     elif "STOCK_ADD" in postback:
-                        stock_add_start(sender_id, user_id)
+                        stock_add_start(sender_id)
 
                     elif "STOCK_INSERT" in postback:
                         stock_add_update(sender_id, user_id, payload_data)
