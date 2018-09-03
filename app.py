@@ -39,11 +39,9 @@ def webhook():
                 recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
 
                 user_id = get_user_id(sender_id)
-                print(user_id)
 
                 if messaging_event.get("message"):  # someone sent us a message
                     message_text = messaging_event["message"]["text"]  # the message's text
-                    print(message_text)
 
                     if message_text == "보기":
                         get_list_info(sender_id)
@@ -58,6 +56,9 @@ def webhook():
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                     postback = messaging_event["postback"]["payload"]
+                    payload_data = postback.split("_")
+                    print(postback)
+                    print(payload_data)
 
                     if postback == "INFO_PLAYLOAD" or postback == "BOT_START":
                         get_how_to_use(sender_id)
@@ -129,7 +130,7 @@ def make_stock_list_generic(stock_lists):
         button_data = {
             "type": 'postback',
             "title": '종목 수정',
-            "payload": 'STOCK_MODIFY'+stock['stock_code']
+            "payload": 'STOCK_MODIFY_'+stock['stock_code']
         }
         button_json.append(button_data)
 
@@ -143,7 +144,7 @@ def make_stock_list_generic(stock_lists):
         button_data = {
             "type": 'postback',
             "title": '추천 뉴스',
-            "payload": 'STOCK_NEWS'+stock['stock_code']
+            "payload": 'STOCK_NEWS_'+stock['stock_code']
         }
         button_json.append(button_data)
 
@@ -158,14 +159,6 @@ def make_stock_list_generic(stock_lists):
 
     temp = json.dumps(result_json)
     return json.loads(temp)
-
-
-# def get_list_info(user_id):
-#     api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
-#     response = requests.get(api_url)
-#
-#     data = json.loads(response.text)
-#     return data
 
 
 def get_estimate_info(user_id):
