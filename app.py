@@ -133,7 +133,7 @@ def get_estimate_info(user_id):
 
 
 def get_stock_news(recipient_id, user_id, payload_data):
-    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?stock_id=' + payload_data[2]
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?code=' + payload_data[2]
     response = requests.get(api_url)
     print(response.text)
     data = json.loads(response.text)
