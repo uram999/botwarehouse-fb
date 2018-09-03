@@ -194,7 +194,7 @@ def stock_modify_start(recipient_id, payload_data):
 
 def stock_modify_search(recipient_id, code):
     match_code = code.split("[")[1]
-    match_code = match_code.split("]")[1]
+    match_code = match_code.split("]")[0]
     print(match_code)
     search_data = stock_search(match_code)
 
