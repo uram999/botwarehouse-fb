@@ -43,14 +43,12 @@ def webhook():
                 user_id = get_user_id(sender_id)
 
                 if messaging_event.get("message"):  # someone sent us a message
-                    global PRE_STOCK_CODE
-                    print(PRE_STOCK_CODE)
 
                     message_text = messaging_event["message"]["text"]  # the message's text
 
                     if message_text == "보기":
                         get_list_info(sender_id)
-                    elif PRE_STOCK_CODE != '':
+                    elif globals(PRE_STOCK_CODE) != '':
                         stock_modify_search(sender_id, message_text)
                     else:
                         send_message(sender_id, "roger that!")
