@@ -146,7 +146,6 @@ def make_stock_news_generic(news_lists):
 
     for news in news_lists:
 
-        subtitle = news['link'].split('/')[2]
         action_json = {
             "type": 'web_url',
             "url": news['link'],
@@ -164,7 +163,7 @@ def make_stock_news_generic(news_lists):
 
         result_data = {
             "title": news['title'],
-            "subtitle": subtitle,
+            "subtitle": '',
             "image_url": os.environ["NEWS_IMAGE"],
             "default_action": action_json,
             "buttons": button_json,
