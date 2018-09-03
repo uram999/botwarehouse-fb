@@ -186,7 +186,6 @@ def stock_modify_start(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 종목수정을 시작합니다.".format(code=payload_data[2]))
     global PRE_STOCK_CODE
     PRE_STOCK_CODE = payload_data[2]
-    print(PRE_STOCK_CODE)
 
     send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 []안에 입력 해 주세요.")
     send_message(recipient_id, "Ex) [094280] , [035420]")
@@ -195,7 +194,6 @@ def stock_modify_start(recipient_id, payload_data):
 def stock_modify_search(recipient_id, code):
     match_code = code.split("[")[1]
     match_code = match_code.split("]")[0]
-    print(match_code)
     search_data = stock_search(match_code)
 
     if search_data['success']:
@@ -330,6 +328,9 @@ def make_stock_list_generic(stock_lists):
 
 
 def make_modify_stock_generic(stock):
+    global PRE_STOCK_CODE
+    global NEW_STOCK_CODE
+
     result_json = []
 
     action_json = {
