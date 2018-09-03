@@ -133,9 +133,11 @@ def get_estimate_info(user_id):
 
 
 def get_stock_news(recipient_id, user_id, payload_data):
+    send_message(recipient_id, "종목번호:{code} 의 베스트 뉴스입니다.".format(code=payload_data[2]))
+
     api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?code=' + payload_data[2]
     response = requests.get(api_url)
-    print(response.text)
+
     data = json.loads(response.text)
     generic_info = make_stock_news_generic(data)
     send_generic(recipient_id, generic_info)
