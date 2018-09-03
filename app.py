@@ -80,7 +80,7 @@ def webhook():
                         stock_modify_start(sender_id, payload_data)
 
                     elif "STOCK_UPDATE" in postback:
-                        pass
+                        stock_modify_update(sender_id, user_id, payload_data)
 
                     elif "STOCK_REVERT" in postback:
                         stock_modify_revert(sender_id, user_id)
@@ -203,7 +203,6 @@ def stock_modify_search(recipient_id, code):
         global NEW_STOCK_CODE
         NEW_STOCK_CODE = search_data['stock_code']
         global PRE_STOCK_CODE
-        print(PRE_STOCK_CODE)
 
         generic_info = make_modify_stock_generic(search_data)
         send_generic(recipient_id, generic_info)
@@ -226,15 +225,19 @@ def stock_modify_update(recipient_id, user_id, payload_data):
 
     data = json.loads(response.text)[0]
 
+    send_message(recipient_id, "관심 종목이 수정되었습니다.")
+    send_message(recipient_id, "{pre_name}({pre_code}) -> {new_name}({new_code})"
+                 .format(pre_name=data['pre_stock']['stock_name'], pre_code=data['pre_stock']['stock_code'],
+                         new_name=data['new_stock']['stock_name'], new_code=data['new_stock']['stock_code']))
+
     reset_global()
-    return data
 
 
 def reset_global():
     global PRE_STOCK_CODE
-    global NEW_STOCK_CODE
-
     PRE_STOCK_CODE = ''
+
+    global NEW_STOCK_CODE
     NEW_STOCK_CODE = ''
 
 
