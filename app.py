@@ -186,6 +186,7 @@ def stock_modify_start(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 종목수정을 시작합니다.".format(code=payload_data[2]))
     global PRE_STOCK_CODE
     PRE_STOCK_CODE = payload_data[2]
+    print(PRE_STOCK_CODE)
 
     send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 입력 해 주세요.")
     send_message(recipient_id, "Ex) 094280 , 035420")
