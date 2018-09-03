@@ -202,6 +202,8 @@ def stock_modify_search(recipient_id, code):
 
         global NEW_STOCK_CODE
         NEW_STOCK_CODE = search_data['stock_code']
+        global PRE_STOCK_CODE
+        print(PRE_STOCK_CODE)
 
         generic_info = make_modify_stock_generic(search_data)
         send_generic(recipient_id, generic_info)
