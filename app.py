@@ -50,7 +50,7 @@ def webhook():
 
                     if message_text == "보기":
                         get_list_info(sender_id)
-                    elif PRE_STOCK_CODE != '':
+                    elif "[" in message_text and "]" in message_text:
                         stock_modify_search(sender_id, message_text)
                     else:
                         send_message(sender_id, "roger that!")
@@ -188,12 +188,15 @@ def stock_modify_start(recipient_id, payload_data):
     PRE_STOCK_CODE = payload_data[2]
     print(PRE_STOCK_CODE)
 
-    send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 입력 해 주세요.")
-    send_message(recipient_id, "Ex) 094280 , 035420")
+    send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 []안에 입력 해 주세요.")
+    send_message(recipient_id, "Ex) [094280] , [035420]")
 
 
 def stock_modify_search(recipient_id, code):
-    search_data = stock_search(code)
+    match_code = code.split("[")[1]
+    match_code = match_code.split("]")[1]
+    print(match_code)
+    search_data = stock_search(match_code)
 
     if search_data['success']:
         send_message(recipient_id, "검색된 종목이 있습니다.")
