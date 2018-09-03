@@ -35,15 +35,18 @@ def webhook():
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
 
-                if messaging_event.get("message"):  # someone sent us a message
+                sender_id = messaging_event["sender"]["id"]
+                recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
 
-                    sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                    recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
+                user_id = get_user_id(sender_id)
+                print(user_id)
+
+                if messaging_event.get("message"):  # someone sent us a message
                     message_text = messaging_event["message"]["text"]  # the message's text
                     print(message_text)
 
                     if message_text == "보기":
-                        get_list_info_gen(sender_id)
+                        get_list_info(sender_id)
                     else:
                         send_message(sender_id, "roger that!")
 
@@ -54,21 +57,16 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    sender_id = messaging_event["sender"]["id"]
                     postback = messaging_event["postback"]["payload"]
 
                     if postback == "INFO_PLAYLOAD" or postback == "BOT_START":
-                        send_message(sender_id, "========= 사 용 방 법 ========= ")
-                        send_message(sender_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
-                        send_message(sender_id, "2. 내 관심종목 : 등록된 내 관심종목을 보여줍니다")
-                        send_message(sender_id, "3. 지표 보기 : 등록된 관심종목의 매수/매도 지표를 보여줍니다")
+                        get_how_to_use(sender_id)
 
                     elif postback == "LIST_PAYLOAD":
-                        send_message(sender_id, "등록되어 있는 관심 종목들을 알려드릴게요!")
-                        get_list_info_gen(sender_id)
+                        get_list_info(sender_id, user_id)
 
                     elif postback == "POINT_PLAYLOAD":
-                        stock_estimate_info = get_estimate_info()
+                        stock_estimate_info = get_estimate_info(user_id)
                         send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
                         for info in stock_estimate_info:
                             send_message(sender_id, "[{name}] 의 오늘 분석을 알려드릴게요!"
@@ -88,23 +86,41 @@ def webhook():
     return "ok", 200
 
 
-def get_list_info_gen(recipient_id):
-    URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
-    response = requests.get(URL)
+def get_user_id(recipient_id):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_user_id?fb_id='+recipient_id
+    response = requests.get(api_url)
 
     data = json.loads(response.text)
-    generic_info = make_generic(data)
+
+    return data.naver_id
+
+
+def get_how_to_use(recipient_id):
+    send_message(recipient_id, "========= 사 용 방 법 ========= ")
+    send_message(recipient_id, "1. 설명 보기 : 사용 방법을 볼 수 있다.")
+    send_message(recipient_id, "2. 내 관심종목 : 등록된 내 관심종목을 보여줍니다")
+    send_message(recipient_id, "3. 지표 보기 : 등록된 관심종목의 매수/매도 지표를 보여줍니다")
+
+
+def get_list_info(recipient_id, user_id):
+    send_message(recipient_id, "등록되어 있는 관심 종목들을 알려드릴게요!")
+
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
+    response = requests.get(api_url)
+
+    data = json.loads(response.text)
+    generic_info = make_stock_list_generic(data)
     send_generic(recipient_id, generic_info)
 
 
-def make_generic(stock_lists):
+def make_stock_list_generic(stock_lists):
     result_json = []
 
     for stock in stock_lists:
 
         action_json = {
             "type": 'web_url',
-            "url": 'https://www.facebook.com/BotWarehouse-1498183390311752/?modal=admin_todo_tour',
+            "url": 'https://finance.naver.com/item/main.nhn?code='+stock['stock_code'],
             "messenger_extensions": False,
             "webview_height_ratio": 'tall'
         }
@@ -113,21 +129,21 @@ def make_generic(stock_lists):
         button_data = {
             "type": 'postback',
             "title": '종목 수정',
-            "payload": 'STOCK_MODIFY'
+            "payload": 'STOCK_MODIFY'+stock['stock_code']
         }
         button_json.append(button_data)
 
         button_data = {
             "type": 'postback',
             "title": '지표 보기',
-            "payload": 'STOCK_INDICATOR'
+            "payload": 'STOCK_INDICATOR_'+stock['stock_code']
         }
         button_json.append(button_data)
 
         button_data = {
             "type": 'postback',
             "title": '추천 뉴스',
-            "payload": 'STOCK_NEWS'
+            "payload": 'STOCK_NEWS'+stock['stock_code']
         }
         button_json.append(button_data)
 
@@ -144,17 +160,17 @@ def make_generic(stock_lists):
     return json.loads(temp)
 
 
-def get_list_info():
-    URL = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id=uram999'
-    response = requests.get(URL)
+def get_list_info(user_id):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
+    response = requests.get(api_url)
 
     data = json.loads(response.text)
     return data
 
 
-def get_estimate_info():
-    URL = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id=uram999'
-    response = requests.get(URL)
+def get_estimate_info(user_id):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id='+user_id
+    response = requests.get(api_url)
 
     data = json.loads(response.text)
     print(data)
