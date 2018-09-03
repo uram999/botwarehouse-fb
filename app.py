@@ -92,7 +92,8 @@ def get_user_id(recipient_id):
 
     data = json.loads(response.text)
 
-    return data.naver_id
+    print(data)
+    return data['naver_id']
 
 
 def get_how_to_use(recipient_id):
