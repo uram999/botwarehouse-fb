@@ -135,7 +135,7 @@ def get_estimate_info(user_id):
 def get_stock_news(recipient_id, user_id, payload_data):
     api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?stock_id=' + payload_data[2]
     response = requests.get(api_url)
-
+    print(response.text)
     data = json.loads(response.text)
     generic_info = make_stock_news_generic(data)
     send_generic(recipient_id, generic_info)
