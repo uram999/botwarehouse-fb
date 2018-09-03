@@ -67,37 +67,23 @@ def webhook():
                         get_list_info(sender_id, user_id)
 
                     elif postback == "POINT_PLAYLOAD":
-                        stock_estimate_info = get_estimate_info(user_id)
-                        send_message(sender_id, "관심 종목의 지표를 알려드릴게요!")
-                        for info in stock_estimate_info:
-                            send_message(sender_id, "[{name}] 의 오늘 분석을 알려드릴게요!"
-                                         .format(name=info['stock']))
-
-                            send_message(sender_id, "매수지표 : {ask}\n매도지표 : {bid}\n"
-                                         .format(ask=info['ask'], bid=info['bid']))
-
-                            if info['ask'] > 75:
-                                send_message(sender_id, "으음... 조금더 질러 볼까요? 하하")
-
-                            if info['bid'] > 75:
-                                send_message(sender_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
-                            send_message(sender_id, "============================ ")
+                        get_estimate_info_all(sender_id, user_id)
 
                     elif "STOCK_MODIFY" in postback:
                         pass
 
                     elif "STOCK_INDICATOR" in postback:
-                        pass
+                        get_estimate_info(sender_id, user_id, payload_data)
 
                     elif "STOCK_NEWS" in postback:
-                        get_stock_news(sender_id, user_id, payload_data)
+                        get_stock_news(sender_id, payload_data)
                     pass
 
     return "ok", 200
 
 
 def get_user_id(recipient_id):
-    api_url = os.environ["SERVER_URL"] + '/stock/get_user_id?fb_id='+recipient_id
+    api_url = os.environ["SERVER_URL"] + '/stock/get_user_id?fb_id={fb_id}'.format(fb_id=recipient_id)
     response = requests.get(api_url)
 
     data = json.loads(response.text)
@@ -115,7 +101,7 @@ def get_how_to_use(recipient_id):
 def get_list_info(recipient_id, user_id):
     send_message(recipient_id, "등록되어 있는 관심 종목들을 알려드릴게요!")
 
-    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id={user_id}'.format(user_id=user_id)
     response = requests.get(api_url)
 
     data = json.loads(response.text)
@@ -123,16 +109,50 @@ def get_list_info(recipient_id, user_id):
     send_generic(recipient_id, generic_info)
 
 
-def get_estimate_info(user_id):
-    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_estimate?user_id=' + user_id
+def get_estimate_info_all(recipient_id, user_id):
+    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_estimate_all?user_id={user_id}'.format(user_id=user_id)
     response = requests.get(api_url)
 
-    data = json.loads(response.text)
-    print(data)
-    return data
+    stock_estimate_info_list = json.loads(response.text)
+
+    send_message(recipient_id, "관심 종목의 지표를 알려드릴게요!")
+    for info in stock_estimate_info_list:
+        send_message(recipient_id, "[{name}] 의 오늘 분석을 알려드릴게요!"
+                     .format(name=info['stock']))
+
+        send_message(recipient_id, "매수지표 : {ask}\n매도지표 : {bid}\n"
+                     .format(ask=info['ask'], bid=info['bid']))
+
+        if info['ask'] > 75:
+            send_message(recipient_id, "으음... 조금더 질러 볼까요? 하하")
+
+        if info['bid'] > 75:
+            send_message(recipient_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
+        send_message(recipient_id, "============================ ")
 
 
-def get_stock_news(recipient_id, user_id, payload_data):
+def get_estimate_info(sender_id, user_id, payload_data):
+    api_url = os.environ["SERVER_URL"] \
+              + '/stock/get_stock_estimate?user_id={user_id}&code={code}'.format(user_id=user_id, code=payload_data[2])
+    response = requests.get(api_url)
+
+    stock_estimate_info = json.loads(response.text)
+
+    send_message(sender_id, "[{name}] 의 오늘 분석을 알려드릴게요!"
+                 .format(name=stock_estimate_info['stock']))
+
+    send_message(sender_id, "매수지표 : {ask}\n매도지표 : {bid}\n"
+                 .format(ask=stock_estimate_info['ask'], bid=stock_estimate_info['bid']))
+
+    if stock_estimate_info['ask'] > 75:
+        send_message(sender_id, "으음... 조금더 질러 볼까요? 하하")
+
+    if stock_estimate_info['bid'] > 75:
+        send_message(sender_id, "팔때는 고민하시면 안됩니다! 어서 파세요!")
+    send_message(sender_id, "============================ ")
+
+
+def get_stock_news(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 베스트 뉴스입니다.".format(code=payload_data[2]))
 
     api_url = os.environ["SERVER_URL"] + '/stock/get_stock_news?code=' + payload_data[2]
