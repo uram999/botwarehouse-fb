@@ -136,7 +136,7 @@ def get_estimate_info(sender_id, user_id, payload_data):
               + '/stock/get_stock_estimate?user_id={user_id}&code={code}'.format(user_id=user_id, code=payload_data[2])
     response = requests.get(api_url)
 
-    stock_estimate_info = json.loads(response.text)
+    stock_estimate_info = json.loads(response.text)[0]
 
     send_message(sender_id, "[{name}] 의 오늘 분석을 알려드릴게요!"
                  .format(name=stock_estimate_info['stock']))
