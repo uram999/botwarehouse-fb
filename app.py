@@ -212,7 +212,7 @@ def make_stock_list_generic(stock_lists):
         result_data = {
             "title": stock['stock_name']+"("+stock['stock_code']+")",
             "subtitle": stock['stock_busiType'],
-            "image_url": 'https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/38511998_1498186563644768_5962859944947482624_o.jpg?_nc_cat=0&oh=778b88d1ef3fc7bef74a8f7db5cef3b8&oe=5BEE2966',
+            "image_url": os.environ["MAIN_IMAGE"],
             "default_action": action_json,
             "buttons": button_json,
         }
