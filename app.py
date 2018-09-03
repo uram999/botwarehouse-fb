@@ -181,6 +181,7 @@ def get_stock_news(recipient_id, payload_data):
 
 def stock_modify_start(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 종목수정을 시작합니다.".format(code=payload_data[2]))
+    global PRE_STOCK_CODE
     PRE_STOCK_CODE = payload_data[2]
 
     send_message(recipient_id, "수정하고 싶은 종목의 종목코드를 입력 해 주세요.")
@@ -194,7 +195,9 @@ def stock_modify_search(recipient_id, code):
         send_message(recipient_id, "검색된 종목이 있습니다.")
         send_message(recipient_id, "검색된 종목이 맞는지 확인 해 주세요!")
 
+        global NEW_STOCK_CODE
         NEW_STOCK_CODE = search_data['stock_code']
+
         generic_info = make_modify_stock_generic(search_data)
         send_generic(generic_info)
     else:
@@ -205,6 +208,7 @@ def stock_modify_search(recipient_id, code):
 def stock_modify_revert(recipient_id, user_id):
     send_message(recipient_id, "종목 수정이 취소되었습니다!")
     get_estimate_info_all(recipient_id, user_id)
+    reset_global()
 
 
 def stock_modify_update(recipient_id, user_id, payload_data):
@@ -215,10 +219,14 @@ def stock_modify_update(recipient_id, user_id, payload_data):
 
     data = json.loads(response.text)[0]
 
+    reset_global()
     return data
 
 
 def reset_global():
+    global PRE_STOCK_CODE
+    global NEW_STOCK_CODE
+
     PRE_STOCK_CODE = ''
     NEW_STOCK_CODE = ''
 
