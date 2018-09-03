@@ -43,6 +43,9 @@ def webhook():
                 user_id = get_user_id(sender_id)
 
                 if messaging_event.get("message"):  # someone sent us a message
+                    global PRE_STOCK_CODE
+                    print(PRE_STOCK_CODE)
+
                     message_text = messaging_event["message"]["text"]  # the message's text
 
                     if message_text == "보기":
