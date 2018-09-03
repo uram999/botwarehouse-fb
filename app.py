@@ -92,7 +92,6 @@ def get_user_id(recipient_id):
 
     data = json.loads(response.text)
 
-    print(data)
     return data['naver_id']
 
 
@@ -161,12 +160,12 @@ def make_stock_list_generic(stock_lists):
     return json.loads(temp)
 
 
-def get_list_info(user_id):
-    api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
-    response = requests.get(api_url)
-
-    data = json.loads(response.text)
-    return data
+# def get_list_info(user_id):
+#     api_url = os.environ["SERVER_URL"] + '/stock/get_stock_list?user_id='+user_id
+#     response = requests.get(api_url)
+#
+#     data = json.loads(response.text)
+#     return data
 
 
 def get_estimate_info(user_id):
