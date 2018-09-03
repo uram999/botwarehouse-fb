@@ -182,7 +182,7 @@ def get_stock_news(recipient_id, payload_data):
 def stock_modify_start(recipient_id, payload_data):
     send_message(recipient_id, "종목번호:{code} 의 종목수정을 시작합니다.".format(code=payload_data[2]))
     send_message(recipient_id, "수정하고 싶은 종목코드와 새로운 종목코드를 입력 해 주세요.")
-    send_message(recipient_id, "Ex) 094280 > 035420")
+    send_message(recipient_id, "Ex) (수정전) > (수정후) \n094280 > 035420")
 
 
 def stock_modify_search(recipient_id, text):
@@ -209,18 +209,15 @@ def stock_modify_revert(recipient_id, user_id):
 
 def stock_modify_update(recipient_id, user_id, payload_data):
     api_url = os.environ["SERVER_URL"] \
-              + '/stock/search_stock_list?user_id={user_id}&pre_code={pre_code}&new_code={new_code}'\
-                  .format(user_id=user_id, pre_code=payload_data[2], new_code=payload_data[3])
+        + '/stock/update_stock_list?user_id={user_id}&pre_code={pre_code}&new_code={new_code}'\
+        .format(user_id=user_id, pre_code=payload_data[2], new_code=payload_data[3])
     response = requests.get(api_url)
 
     data = json.loads(response.text)[0]
 
     send_message(recipient_id, "관심 종목이 수정되었습니다.")
-    send_message(recipient_id, "{pre_name}({pre_code}) -> {new_name}({new_code})"
-                 .format(pre_name=data['pre_stock']['stock_name'], pre_code=data['pre_stock']['stock_code'],
-                         new_name=data['new_stock']['stock_name'], new_code=data['new_stock']['stock_code']))
-
-    reset_global()
+    send_message(recipient_id, "{pre_name}({pre_code}) -> {new_name}({new_code})"\
+        .format(pre_name=data['pre_stock']['stock_name'], pre_code=data['pre_stock']['stock_code'], new_name=data['new_stock']['stock_name'], new_code=data['new_stock']['stock_code']))
 
 
 def stock_search(code):
