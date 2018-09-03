@@ -354,7 +354,7 @@ def make_stock_list_generic(stock_lists):
         result_data = {
             "title": stock['stock_name']+"("+stock['stock_code']+")",
             "subtitle": stock['stock_busiType'],
-            "image_url": os.environ["MAIN_IMAGE"],
+            "image_url": os.environ["MAIN_IMAGE"] if "미등록" in stock['stock_name'] else os.environ["NOSTOCK_IMAGE"],
             "default_action": action_json,
             "buttons": button_json,
         }
