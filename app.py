@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import urllib
 from datetime import datetime
 
 import requests
@@ -218,9 +219,8 @@ def stock_modify_revert(recipient_id, user_id):
 
 
 def stock_modify_update(recipient_id, user_id, payload_data):
-    api_url = os.environ["SERVER_URL"] \
-        + '/stock/update_stock_list?user_id={user_id}&pre_code={pre_code}&new_code={new_code}'\
-        .format(user_id=user_id, pre_code=payload_data[2], new_code=payload_data[3])
+    url_param = {"user_id": user_id, "pre_code": payload_data[2], "new_code": payload_data[3]}
+    api_url = os.environ["SERVER_URL"] + '/stock/update_stock_list?' + urllib.urlencode(url_param)
     response = requests.get(api_url)
 
     print(api_url)
