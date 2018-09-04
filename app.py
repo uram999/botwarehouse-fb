@@ -223,7 +223,7 @@ def stock_modify_update(recipient_id, user_id, payload_data):
         .format(user_id=user_id, pre_code=payload_data[2], new_code=payload_data[3])
     response = requests.get(api_url)
 
-    data = json.loads(response.text)[0]
+    data = json.loads(response.text)
 
     send_message(recipient_id, "관심 종목이 수정되었습니다.")
     send_message(recipient_id, "{pre_name}({pre_code}) -> {new_name}({new_code})"\
